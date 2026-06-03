@@ -73,10 +73,16 @@
                         {{ form.tipo_documento }}
                     </div>
 
+
+
+
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Número de documento</label>
                         {{ form.numero_documento }}
                     </div>
+
+
+
 
                     <div class="col-12 mb-3">
                         <label class="form-label">Asunto</label>
@@ -208,6 +214,31 @@ function verificar() {
 expediente.addEventListener("input", verificar);
 registro.addEventListener("input", verificar);
 adjunto.addEventListener("input", verificar);
+</script>
+
+
+
+<script>
+const tipoDocumento = document.getElementById("id_tipo_documento");
+const numeroDocumento = document.getElementById("id_numero_documento");
+
+function cargarNumeroDocumento() {
+    const tipo = tipoDocumento.value;
+
+    if (!tipo) {
+        numeroDocumento.value = '';
+        return;
+    }
+
+    fetch(`/obtener-numero-documento/?tipo=${tipo}`)
+        .then(response => response.json())
+        .then(data => {
+            numeroDocumento.value = data.numero;
+        });
+}
+
+tipoDocumento.addEventListener("change", cargarNumeroDocumento);
+document.addEventListener("DOMContentLoaded", cargarNumeroDocumento);
 </script>
 
 </body>

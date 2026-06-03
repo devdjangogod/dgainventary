@@ -15,4 +15,10 @@ urlpatterns = [
         views.verificar_documento,
         name='verificar_documento'
     ),
+
+    path(
+    'obtener-numero-documento/',
+    views.obtener_numero_documento,
+    name='obtener_numero_documento'
+),
 ]

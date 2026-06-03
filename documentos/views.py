@@ -12,6 +12,11 @@ from django.shortcuts import (
 from django.http import JsonResponse
 from .models import Documento
 
+from .forms import DocumentoForm
+
+from django.http import JsonResponse
+from .models import Documento
+
 
 
 
@@ -23,19 +28,22 @@ def dashboard(request):
 
 
 def crear_documento(request):
+
     if request.method == 'POST':
-        form = EntradaDocumentoForm(request.POST)
+        form = DocumentoForm(request.POST)
+
         if form.is_valid():
-            documento = form.save(commit=False)
-            documento.fecha_ingreso = timezone.now().date()
-            documento.save()
+            form.save()
             return redirect('dashboard')
+
+        print(form.errors)  # <-- agrega esto
+
     else:
-        form = EntradaDocumentoForm()
+        form = DocumentoForm()
 
     return render(request, 'documentos/formulario_entrada.html', {
         'form': form,
-        'titulo': 'Registro de entrada'
+        'titulo': 'Registrar Documento'
     })
 
 
@@ -189,4 +197,22 @@ def verificar_documento(request):
         'adjunto_existe_como_expediente': Documento.objects.filter(
             numero_expediente=adjunto
         ).exists(),
+    })
+
+
+
+def obtener_numero_documento(request):
+    tipo = request.GET.get('tipo')
+
+    ultimo = Documento.objects.filter(
+        tipo_documento=tipo
+    ).order_by('-id').first()
+
+    if ultimo and ultimo.numero_documento.isdigit():
+        siguiente = int(ultimo.numero_documento) + 1
+    else:
+        siguiente = 1
+
+    return JsonResponse({
+        'numero': str(siguiente).zfill(3)
     })
