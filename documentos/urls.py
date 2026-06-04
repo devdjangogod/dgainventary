@@ -10,15 +10,17 @@ urlpatterns = [
     path('myadmin/archivar/<int:pk>/', views.archivar_documento, name='archivar_documento'),
     path('myadmin/detalle/<int:pk>/', views.detalle_documento, name='detalle_documento'),
 
-    path(
-        'verificar-documento/',
-        views.verificar_documento,
-        name='verificar_documento'
-    ),
+    path('verificar-documento/', views.verificar_documento, name='verificar_documento'),
 
-    path(
-    'obtener-numero-documento/',
-    views.obtener_numero_documento,
-    name='obtener_numero_documento'
-),
+    path('obtener-numero-documento/', views.obtener_numero_documento, name='obtener_numero_documento'),
+
+    path('registros-documentos/', views.registros_documentos, name='registros_documentos'),
+
+
+    path('dashboard/', views.dashboard, name='dashboard'),
+    path('registros/', views.registros_documentos, name='registros_documentos'),
+    path('reportes/', views.reportes, name='reportes'),
+    path('configuracion/', views.configuracion, name='configuracion'),
+
+
 ]

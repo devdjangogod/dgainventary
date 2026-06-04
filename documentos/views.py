@@ -17,6 +17,9 @@ from .forms import DocumentoForm
 from django.http import JsonResponse
 from .models import Documento
 
+from django.shortcuts import render
+from .models import Documento
+
 
 
 
@@ -34,7 +37,7 @@ def crear_documento(request):
 
         if form.is_valid():
             form.save()
-            return redirect('dashboard')
+            return redirect('registros_documentos')
 
         print(form.errors)  # <-- agrega esto
 
@@ -216,3 +219,71 @@ def obtener_numero_documento(request):
     return JsonResponse({
         'numero': str(siguiente).zfill(3)
     })
+
+
+
+def registros_documentos(request):
+    documentos = Documento.objects.all().order_by('-fecha_ingreso')
+
+    return render(
+        request,
+        'documentos/registros_documentos.html',
+        {'documentos': documentos}
+    )
+
+
+
+
+
+def configuracion(request):
+    return render(request, 'documentos/configuracion.html')
+
+
+
+
+
+def reportes(request):
+
+    tipo = request.GET.get('tipo', 'OFICIO')
+
+    documentos = Documento.objects.filter(
+        tipo_documento=tipo
+    )
+
+    registrados = {}
+
+    for doc in documentos:
+        registrados[doc.numero_documento] = {
+            "autor": doc.autor,
+            "estado": doc.estado
+        }
+
+    numeros = []
+    contador = 1
+
+    for fila in range(25):
+        columnas = []
+
+        for col in range(12):
+            numero = str(contador).zfill(3)
+
+            columnas.append({
+                "numero": numero,
+                "registrado": numero in registrados,
+                "autor": registrados.get(numero, {}).get("autor", ""),
+                "estado": registrados.get(numero, {}).get("estado", ""),
+            })
+
+            contador += 1
+
+        numeros.append(columnas)
+
+    return render(
+        request,
+        "documentos/reportes.html",
+        {
+            "numeros": numeros,
+            "tipo_actual": tipo,
+            "tipos": Documento.TIPO_DOCUMENTO,
+        }
+    )
