@@ -63,3 +63,20 @@ class DocumentoForm(forms.ModelForm):
             'readonly': True,
             'class': 'form-control bg-light fw-bold'
         })
+
+
+
+
+from django import forms
+from .models import ReservaDocumento
+
+class ReservaDocumentoForm(forms.ModelForm):
+    class Meta:
+        model = ReservaDocumento
+        fields = ['tipo_documento', 'numero_documento', 'autor']
+
+        widgets = {
+            'tipo_documento': forms.Select(attrs={'class': 'form-select'}),
+            'numero_documento': forms.TextInput(attrs={'class': 'form-control'}),
+            'autor': forms.Select(attrs={'class': 'form-select'}),
+        }

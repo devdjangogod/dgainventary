@@ -64,7 +64,20 @@ active
 
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Número de documento</label>
-                            {{ form.numero_documento }}
+
+                            <select name="numero_documento" id="id_numero_documento" class="form-control">
+                                <option value="">Seleccione una reserva</option>
+
+                                {% for reserva in reservas %}
+                                <option
+                                    value="{{ reserva.numero_documento }}"
+                                    data-autor="{{ reserva.autor }}"
+                                    data-tipo="{{ reserva.tipo_documento }}"
+                                >
+                                    {{ reserva.tipo_documento }} - {{ reserva.numero_documento }}
+                                </option>
+                                {% endfor %}
+                            </select>
                         </div>
 
 
@@ -244,6 +257,44 @@ document.addEventListener("DOMContentLoaded", cargarNumeroDocumento);
 </script>
 
 
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+
+    const numeroDocumento = document.getElementById("id_numero_documento");
+    const autor = document.getElementById("id_autor");
+
+    numeroDocumento.addEventListener("change", function() {
+
+        const opcion = this.options[this.selectedIndex];
+
+        autor.value = opcion.dataset.autor || '';
+    });
+
+});
+</script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+
+    const numeroDocumento = document.getElementById("id_numero_documento");
+    const autor = document.getElementById("id_autor");
+    const tipoDocumento = document.getElementById("id_tipo_documento");
+
+    numeroDocumento.addEventListener("change", function(){
+
+        const opcion = this.options[this.selectedIndex];
+
+        autor.value = opcion.dataset.autor || "";
+        tipoDocumento.value = opcion.dataset.tipo || "";
+
+    });
+
+});
+</script>
 {% endblock %}
 
 

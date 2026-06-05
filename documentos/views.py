@@ -20,6 +20,10 @@ from .models import Documento
 from django.shortcuts import render
 from .models import Documento
 
+import json
+from django.views.decorators.http import require_POST
+from django.db import IntegrityError
+
 
 
 
@@ -30,6 +34,8 @@ def dashboard(request):
     })
 
 
+from .models import ReservaDocumento
+
 def crear_documento(request):
 
     if request.method == 'POST':
@@ -39,13 +45,16 @@ def crear_documento(request):
             form.save()
             return redirect('registros_documentos')
 
-        print(form.errors)  # <-- agrega esto
+        print(form.errors)
 
     else:
         form = DocumentoForm()
 
+    reservas = ReservaDocumento.objects.all().order_by('-fecha_reserva')
+
     return render(request, 'documentos/formulario_entrada.html', {
         'form': form,
+        'reservas': reservas,
         'titulo': 'Registrar Documento'
     })
 
@@ -287,3 +296,141 @@ def reportes(request):
             "tipos": Documento.TIPO_DOCUMENTO,
         }
     )
+
+
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .models import ReservaDocumento
+from .forms import ReservaDocumentoForm
+
+def reserva_numero_documento(request):
+    tipo_actual = request.GET.get('tipo', '')
+
+    numeros = []
+
+    if tipo_actual:
+        documentos = Documento.objects.filter(
+            tipo_documento=tipo_actual
+        ).values('numero_documento', 'autor')
+
+        reservas = ReservaDocumento.objects.filter(
+            tipo_documento=tipo_actual
+        ).values('numero_documento', 'autor')
+
+        ocupados = {}
+
+        for doc in documentos:
+            ocupados[doc['numero_documento']] = {
+                'autor': doc['autor'],
+                'origen': 'DOCUMENTO'
+            }
+
+        for reserva in reservas:
+            ocupados[reserva['numero_documento']] = {
+                'autor': reserva['autor'],
+                'origen': 'RESERVA'
+            }
+
+        lista = []
+
+        for i in range(1, 301):
+            numero = str(i).zfill(3)
+
+            if numero in ocupados:
+                lista.append({
+                    'numero': numero,
+                    'reservado': True,
+                    'autor': ocupados[numero]['autor'],
+                    'origen': ocupados[numero]['origen'],
+                })
+            else:
+                lista.append({
+                    'numero': numero,
+                    'reservado': False,
+                    'autor': '',
+                    'origen': '',
+                })
+
+        numeros = [
+            lista[i:i + 12]
+            for i in range(0, len(lista), 12)
+        ]
+
+    return render(request, 'documentos/reserva_numero_documento.html', {
+        'tipos': Documento.TIPO_DOCUMENTO,
+        'autores': Documento.AUTORES,
+        'tipo_actual': tipo_actual,
+        'numeros': numeros,
+    })
+
+
+
+
+def reservas_documentos(request):
+
+    reservas = ReservaDocumento.objects.all().order_by(
+        '-fecha_reserva'
+    )
+
+    return render(
+        request,
+        'documentos/reservas_documentos.html',
+        {
+            'reservas': reservas
+        }
+    )
+
+
+
+import json
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from .models import ReservaDocumento, Documento
+
+
+@require_POST
+def guardar_reserva_ajax(request):
+    try:
+        data = json.loads(request.body)
+
+        tipo_documento = data.get('tipo_documento')
+        numero_documento = data.get('numero_documento')
+        autor = data.get('autor')
+
+        if not tipo_documento or not numero_documento or not autor:
+            return JsonResponse({
+                'ok': False,
+                'error': 'Datos incompletos.'
+            })
+
+        existe_documento = Documento.objects.filter(
+            tipo_documento=tipo_documento,
+            numero_documento=numero_documento
+        ).exists()
+
+        if existe_documento:
+            return JsonResponse({
+                'ok': False,
+                'error': 'Este número ya pertenece a un documento registrado.'
+            })
+
+        reserva, created = ReservaDocumento.objects.update_or_create(
+            tipo_documento=tipo_documento,
+            numero_documento=numero_documento,
+            defaults={
+                'autor': autor
+            }
+        )
+
+        return JsonResponse({
+            'ok': True,
+            'autor': reserva.autor,
+            'created': created
+        })
+
+    except Exception as e:
+        return JsonResponse({
+            'ok': False,
+            'error': str(e)
+        })

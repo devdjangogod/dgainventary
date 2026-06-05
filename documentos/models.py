@@ -15,8 +15,24 @@ class Documento(models.Model):
         ('PROVEIDO', 'Proveído'),
         ('DICTAMEN', 'Dictamen'),
         ('RESOLUCION', 'Resolución'),
-        ('OTRO', 'Otro'),
     ]
+
+    AUTORES = [
+        ('VALERIA', 'VALERIA'),
+        ('INGRID', 'INGRID'),
+        ('JUAN CARLOS', 'JUAN CARLOS'),
+        ('ROSITA', 'ROSITA'),
+        ('LEYDI', 'LEYDI'),
+        ('CLAUDIA', 'CLAUDIA'),
+        ('LUCIA', 'LUCIA'),
+        ('GLADYS', 'GLADYS'),
+        ('MILTON', 'MILTON'),
+    ]
+
+    autor = models.CharField(
+        max_length=50,
+        choices=AUTORES
+    )
 
     fecha_ingreso = models.DateField(default=timezone.now)
 
@@ -24,7 +40,6 @@ class Documento(models.Model):
     numero_registro_principal = models.CharField(max_length=100, unique=True)
     numero_registro_adjunto = models.CharField(max_length=100, blank=True)
 
-    autor = models.CharField(max_length=150)
     tipo_documento = models.CharField(max_length=50, choices=TIPO_DOCUMENTO)
 
     numero_documento = models.CharField(max_length=30, blank=True)
@@ -65,3 +80,42 @@ class Documento(models.Model):
             self.numero_documento = str(correlativo).zfill(3)
 
         super().save(*args, **kwargs)
+
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['tipo_documento', 'numero_documento'],
+                name='unique_tipo_numero_documento'
+            )
+        ]
+
+
+
+
+
+
+
+from django.db import models
+
+
+class ReservaDocumento(models.Model):
+    tipo_documento = models.CharField(max_length=50)
+    numero_documento = models.CharField(max_length=20)
+
+    autor = models.CharField(
+        max_length=50,
+        choices=Documento.AUTORES
+    )
+
+    fecha_reserva = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.tipo_documento} - {self.numero_documento}"
+
+
+    class Meta:
+        unique_together = (
+            'tipo_documento',
+            'numero_documento'
+        )
