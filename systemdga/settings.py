@@ -24,7 +24,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'documentos',
+    # 'documentos',
+    "inventario_patrimonial",
 ]
 
 MIDDLEWARE = [

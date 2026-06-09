@@ -1,0 +1,320 @@
+<!-- templates/inventario_patrimonial/ficha_inventario.html -->
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ficha de Inventario</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            color: #000;
+        }
+
+        .page {
+            width: 100%;
+            padding: 10px;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-red {
+            color: red;
+            font-weight: bold;
+        }
+
+        .titulo {
+            font-weight: bold;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .box {
+            border: 1px solid #000;
+            padding: 10px;
+            display: inline-block;
+            min-width: 250px;
+            text-align: center;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #000;
+            padding: 4px;
+            vertical-align: middle;
+        }
+
+        .label {
+            background: #f6ddcc; /* naranja claro */
+            font-weight: bold;
+            width: 180px;
+        }
+
+        .value {
+            background: #dcebf7; /* celeste */
+        }
+
+        .header-table th {
+            background: #f6ddcc;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .registro td {
+            background: #dcebf7;
+        }
+
+        .sin-borde td {
+            border: none;
+        }
+
+        .mt-20 {
+            margin-top: 20px;
+        }
+
+        .mt-40 {
+            margin-top: 40px;
+        }
+
+        .firmas {
+            margin-top: 90px;
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+
+        .firma-linea {
+            border-top: 1px solid #000;
+            width: 180px;
+            padding-top: 5px;
+        }
+
+
+
+
+        .btn-pdf{
+            position: fixed;
+            right: 25px;
+            bottom: 25px;
+
+            z-index: 9999;
+
+            background: #dc3545;
+            color: white;
+
+            border: none;
+            border-radius: 50px;
+
+            padding: 12px 22px;
+
+            font-size: 14px;
+            font-weight: 600;
+
+            cursor: pointer;
+
+            box-shadow: 0 4px 15px rgba(0,0,0,.25);
+
+            transition: .2s;
+        }
+
+        .btn-pdf:hover{
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,.3);
+        }
+
+        @media print{
+            .btn-pdf{
+                display:none !important;
+            }
+        }
+
+
+
+
+        .header-table{
+    table-layout: fixed;
+    width: 99%;
+}
+
+.col-obs{
+    width: 120px;
+}
+
+.col-desc{
+    width: 120px;
+}
+
+.col-codigo{
+    width: 90px;
+}
+
+    </style>
+</head>
+<body>
+
+<div class="page">
+
+    <button onclick="window.print()" class="btn-pdf">
+        📄 Guardar PDF
+    </button>
+
+    <table class="sin-borde">
+        <tr>
+            <td style="width: 30%;">
+                <div class="box">
+                    <img src="{% static 'inventario_patrimonial/img/unt.png' %}"
+                        alt="UNT"
+                        style="height:90px;">
+                </div>
+            </td>
+            <td style="width: 40%;" class="titulo">
+                FICHA DE LEVANTAMIENTO DE INFORMACIÓN<br>
+                INVENTARIO PATRIMONIAL 2025
+            </td>
+            <td style="width: 30%; text-align: right; margin-right: 20px;">
+                <div class="box">Comisión de<br>Inventario 2025</div>
+            </td>
+        </tr>
+    </table>
+
+    <div style="text-align: right; margin-top: 10px; margin-right: 20px;">
+        FECHA: {% now "d/m/Y" %}
+    </div>
+
+    <table style="width: 40%; margin-top: 10px;">
+        <tr>
+            <td class="label">USUARIO</td>
+            <td class="value">{{ bien.usuario_responsable }}</td>
+        </tr>
+        <tr>
+            <td class="label">DNI :</td>
+            <td class="value">{{ bien.dni }}</td>
+        </tr>
+        <tr>
+            <td class="label">SEDE / FILIAL:</td>
+            <td class="value">{{ bien.sede_filial }}</td>
+        </tr>
+        <tr>
+            <td class="label">LOCAL:</td>
+            <td class="value">{{ bien.local }}</td>
+        </tr>
+        <tr>
+            <td class="label ">DEPENDENCIA:</td>
+            <td class="value">{{ bien.dependencia }}</td>
+        </tr>
+        <tr>
+            <td class="label">UNIDAD / NIVEL 1</td>
+            <td class="value">{{ bien.unidad_nivel_1 }}</td>
+        </tr>
+        <tr>
+            <td class="label">ÁREA / NIVEL 2</td>
+            <td class="value">{{ bien.area_nivel_2 }}</td>
+        </tr>
+        <tr>
+            <td class="label">SUB ÁREA / NIVEL 3</td>
+            <td class="value">{{ bien.sub_area_nivel_3 }}</td>
+        </tr>
+        <tr>
+            <td class="label">NOMBRE DEL AMBIENTE:</td>
+            <td class="value">{{ bien.nombre_ambiente }}</td>
+        </tr>
+        <tr>
+            <td class="label">PISO O NIVEL:</td>
+            <td class="value">{{ bien.piso_nivel }}</td>
+        </tr>
+        <tr>
+            <td class="label">REFERENCIA DE UBICACIÓN</td>
+            <td class="value">{{ bien.referencia_ubicacion }}</td>
+        </tr>
+    </table>
+
+    <div class="text-center mt-20">
+        <strong>TIPO DE VERIFICACIÓN:</strong>
+        FÍSICA ( &nbsp; ) &nbsp;&nbsp;&nbsp;
+        DIGITAL ( &nbsp; )
+    </div>
+
+    <table class="header-table mt-20">
+        <thead>
+        <tr>
+            <th style="width:20px;">N°</th>
+            <th class="col-codigo">CÓDIGO DE INVENTARIO 2025</th>
+            <th class="col-codigo">CÓDIGO PATRIMONIAL</th>
+            <th class="col-desc">DENOMINACIÓN</th>
+            <th style="width:70px;">MARCA</th>
+            <th style="width:70px;">MODELO</th>
+            <th style="width:60px;">COLOR</th>
+            <th style="width:80px;">SERIE</th>
+            <th style="width:80px;">DIMENSIONES</th>
+            <th style="width:50px;">S (1)</th>
+            <th style="width:50px;">E (2)</th>
+            <th class="col-obs">OBSERVACIÓN</th>
+        </tr>
+        </thead>
+
+        <tbody>
+            <tr class="registro">
+                <td>1</td>
+                <td>{{ bien.cod_inv_2025 }}</td>
+                <td>{{ bien.codigo_patrimonial_conciliado }}</td>
+                <td>{{ bien.descripcion }}</td>
+                <td>{{ bien.marca }}</td>
+                <td>{{ bien.modelo }}</td>
+                <td>{{ bien.color }}</td>
+                <td>{{ bien.serie }}</td>
+                <td>{{ bien.dimensiones }}</td>
+                <td>{{ bien.s_1 }}</td>
+                <td>{{ bien.e_2 }}</td>
+                <td>{{ bien.observacion }}</td>
+            </tr>
+
+            {% for i in "2345678910" %}
+            <tr>
+                <td>{{ forloop.counter|add:"1" }}</td>
+                <td>&nbsp;</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="mt-20">
+        <strong>(1)</strong> Uso (U), Desuso (D)<br>
+        <strong>(2)</strong> Nuevo (N), Bueno (B), Regular (R), Malo (M), RAEE (X), Chatarra (Y)
+    </div>
+
+    <div class="mt-20">
+        <strong>CONSIDERACIONES:</strong><br>
+        - El usuario declara haber mostrado todos los bienes que se encuentran bajo su responsabilidad y no contar con más bienes materia de inventario.<br>
+        - El usuario es responsable de la permanencia y conservación de cada uno de los bienes descritos.<br>
+        - Cualquier necesidad de desplazamiento del bien mueble dentro o fuera del local de la Entidad, es previamente comunicado al encargado de la OCP.
+    </div>
+
+    <div class="firmas">
+        <div class="firma-linea">USUARIO</div>
+        <div class="firma-linea">PERSONAL INVENTARIADOR 1</div>
+        <div class="firma-linea">PERSONAL INVENTARIADOR 2</div>
+    </div>
+
+</div>
+
+</body>
+</html>

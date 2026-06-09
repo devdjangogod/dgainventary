@@ -1,0 +1,264 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ titulo }}{% endblock %}
+{% block active_registros %}active{% endblock %}
+
+{% block content %}
+
+<div class="mb-4">
+    <h2 class="fw-bold">{{ titulo }}</h2>
+    <p class="text-muted">Formulario por secciones desplegables</p>
+</div>
+
+<style>
+    .accordion-button {
+        font-weight: 700;
+    }
+
+    .header-ubicacion {
+        background: #1e40af !important;
+        color: white !important;
+    }
+
+    .header-codigo {
+        background: #047857 !important;
+        color: white !important;
+    }
+
+    .header-bien {
+        background: #b45309 !important;
+        color: white !important;
+    }
+
+    .header-estado {
+        background: #7c3aed !important;
+        color: white !important;
+    }
+
+    .accordion-button::after {
+        filter: brightness(0) invert(1);
+    }
+</style>
+
+{% if form.errors %}
+<div class="alert alert-danger">
+    <i class="bi bi-exclamation-triangle"></i>
+    Hay campos obligatorios sin completar. Revisa la sección marcada.
+</div>
+{% endif %}
+
+<form method="POST" novalidate>
+    {% csrf_token %}
+
+    <div class="accordion mb-4" id="accordionInventario">
+
+        <!-- SECCIÓN 1 -->
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed header-ubicacion"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#seccion1">
+                    <i class="bi bi-person-badge me-2"></i>
+                    Responsable y ubicación
+                </button>
+            </h2>
+
+            <div id="seccion1"
+                 class="accordion-collapse collapse"
+                 data-bs-parent="#accordionInventario">
+                <div class="accordion-body">
+                    <div class="row">
+
+                        {% for field in form %}
+                            {% if field.name == 'usuario_responsable' or field.name == 'dni' or field.name == 'sede_filial' or field.name == 'local' or field.name == 'dependencia' or field.name == 'unidad_nivel_1' or field.name == 'area_nivel_2' or field.name == 'sub_area_nivel_3' or field.name == 'nombre_ambiente' or field.name == 'piso_nivel' or field.name == 'referencia_ubicacion' %}
+
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-semibold">
+                                    {{ field.label }}
+                                </label>
+
+                                {{ field }}
+
+                                {% if field.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ field.errors }}
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            {% endif %}
+                        {% endfor %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 2 -->
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed header-codigo"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#seccion2">
+                    <i class="bi bi-upc-scan me-2"></i>
+                    Códigos patrimoniales
+                </button>
+            </h2>
+
+            <div id="seccion2"
+                 class="accordion-collapse collapse"
+                 data-bs-parent="#accordionInventario">
+                <div class="accordion-body">
+                    <div class="row">
+
+                        {% for field in form %}
+                            {% if field.name == 'cod_inv_2025' or field.name == 'codigo_patrimonial_conciliado' %}
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">
+                                    {{ field.label }}
+                                </label>
+
+                                {{ field }}
+
+                                {% if field.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ field.errors }}
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            {% endif %}
+                        {% endfor %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 3 -->
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed header-bien"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#seccion3">
+                    <i class="bi bi-box-seam me-2"></i>
+                    Datos del bien
+                </button>
+            </h2>
+
+            <div id="seccion3"
+                 class="accordion-collapse collapse"
+                 data-bs-parent="#accordionInventario">
+                <div class="accordion-body">
+                    <div class="row">
+
+                        {% for field in form %}
+                            {% if field.name == 'descripcion' or field.name == 'marca' or field.name == 'modelo' or field.name == 'color' or field.name == 'serie' or field.name == 'dimensiones' %}
+
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-semibold">
+                                    {{ field.label }}
+                                </label>
+
+                                {{ field }}
+
+                                {% if field.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ field.errors }}
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            {% endif %}
+                        {% endfor %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 4 -->
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed header-estado"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#seccion4">
+                    <i class="bi bi-clipboard-check me-2"></i>
+                    Estado y observación
+                </button>
+            </h2>
+
+            <div id="seccion4"
+                 class="accordion-collapse collapse"
+                 data-bs-parent="#accordionInventario">
+                <div class="accordion-body">
+                    <div class="row">
+
+                        {% for field in form %}
+                            {% if field.name == 's_1' or field.name == 'e_2' or field.name == 'observacion' %}
+
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-semibold">
+                                    {{ field.label }}
+                                </label>
+
+                                {{ field }}
+
+                                {% if field.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ field.errors }}
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            {% endif %}
+                        {% endfor %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="d-flex gap-2 mb-5">
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-save"></i> Guardar registro
+        </button>
+
+        <a href="{% url 'registros_inventario' %}" class="btn btn-secondary">
+            Cancelar
+        </a>
+    </div>
+
+</form>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const primerCampoConError = document.querySelector('.is-invalid');
+
+    if (primerCampoConError) {
+        const seccion = primerCampoConError.closest('.accordion-collapse');
+
+        if (seccion) {
+            const collapse = new bootstrap.Collapse(seccion, {
+                toggle: true
+            });
+
+            primerCampoConError.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center'
+            });
+        }
+    }
+});
+</script>
+{% endblock %}
