@@ -228,7 +228,12 @@
 
     <div class="d-flex gap-2 mb-5">
         <button type="submit" class="btn btn-primary">
-            <i class="bi bi-save"></i> Guardar registro
+            <i class="bi bi-save"></i>
+            {% if modo_edicion %}
+                Actualizar registro
+            {% else %}
+                Guardar registro
+            {% endif %}
         </button>
 
         <a href="{% url 'registros_inventario' %}" class="btn btn-secondary">

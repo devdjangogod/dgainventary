@@ -262,37 +262,23 @@
         </thead>
 
         <tbody>
+            {% for item in bienes %}
             <tr class="registro">
-                <td>1</td>
-                <td>{{ bien.cod_inv_2025 }}</td>
-                <td>{{ bien.codigo_patrimonial_conciliado }}</td>
-                <td>{{ bien.descripcion }}</td>
-                <td>{{ bien.marca }}</td>
-                <td>{{ bien.modelo }}</td>
-                <td>{{ bien.color }}</td>
-                <td>{{ bien.serie }}</td>
-                <td>{{ bien.dimensiones }}</td>
-                <td>{{ bien.s_1 }}</td>
-                <td>{{ bien.e_2 }}</td>
-                <td>{{ bien.observacion }}</td>
-            </tr>
-
-            {% for i in "2345678910" %}
-            <tr>
-                <td>{{ forloop.counter|add:"1" }}</td>
-                <td>&nbsp;</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ item.cod_inv_2025 }}</td>
+                <td>{{ item.codigo_patrimonial_conciliado }}</td>
+                <td>{{ item.descripcion }}</td>
+                <td>{{ item.marca }}</td>
+                <td>{{ item.modelo }}</td>
+                <td>{{ item.color }}</td>
+                <td>{{ item.serie }}</td>
+                <td>{{ item.dimensiones }}</td>
+                <td>{{ item.s_1 }}</td>
+                <td>{{ item.e_2 }}</td>
+                <td>{{ item.observacion }}</td>
             </tr>
             {% endfor %}
+
         </tbody>
     </table>
 
