@@ -1,7 +1,161 @@
+
 {% extends 'base.html' %}
 
 {% block active_dashboard %}active{% endblock %}
 
 {% block content %}
+
 <h1>Dashboard</h1>
+
+<!-- TODO TU CONTENIDO: cards, tablas y canvas -->
+
+    <div class="row g-3">
+
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-header fw-bold">Bienes por sede</div>
+                <div class="card-body">
+                    {% for item in bienes_por_sede %}
+                        <div class="d-flex justify-content-between border-bottom py-2">
+                            <span>{{ item.sede_filial|default:"Sin sede" }}</span>
+                            <strong>{{ item.total }}</strong>
+                        </div>
+                    {% empty %}
+                        <p class="text-muted">Sin datos</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-header fw-bold">Bienes por dependencia</div>
+                <div class="card-body">
+                    {% for item in bienes_por_dependencia %}
+                        <div class="d-flex justify-content-between border-bottom py-2">
+                            <span>{{ item.dependencia|default:"Sin dependencia" }}</span>
+                            <strong>{{ item.total }}</strong>
+                        </div>
+                    {% empty %}
+                        <p class="text-muted">Sin datos</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-header fw-bold">Bienes por marca</div>
+                <div class="card-body">
+                    {% for item in bienes_por_marca %}
+                        <div class="d-flex justify-content-between border-bottom py-2">
+                            <span>{{ item.marca|default:"Sin marca" }}</span>
+                            <strong>{{ item.total }}</strong>
+                        </div>
+                    {% empty %}
+                        <p class="text-muted">Sin datos</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card shadow-sm mt-4">
+        <div class="card-header fw-bold">Últimos bienes registrados</div>
+        <div class="card-body table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Código Inv.</th>
+                        <th>Descripción</th>
+                        <th>Usuario</th>
+                        <th>Ambiente</th>
+                        <th>Sede</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bien in ultimos_bienes %}
+                    <tr>
+                        <td>{{ bien.cod_inv_2025 }}</td>
+                        <td>{{ bien.descripcion }}</td>
+                        <td>{{ bien.usuario_responsable }}</td>
+                        <td>{{ bien.nombre_ambiente }}</td>
+                        <td>{{ bien.sede_filial }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted">No hay registros</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+<div class="row g-3 mt-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header fw-bold">Bienes por sede</div>
+            <div class="card-body">
+                <canvas id="graficoSedes"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header fw-bold">Bienes por marca</div>
+            <div class="card-body">
+                <canvas id="graficoMarcas"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
+
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+const sedesLabels = JSON.parse('{{ sedes_labels|escapejs }}');
+const sedesData = JSON.parse('{{ sedes_data|escapejs }}');
+
+const marcasLabels = JSON.parse('{{ marcas_labels|escapejs }}');
+const marcasData = JSON.parse('{{ marcas_data|escapejs }}');
+
+new Chart(document.getElementById('graficoSedes'), {
+    type: 'bar',
+    data: {
+        labels: sedesLabels,
+        datasets: [{
+            label: 'Cantidad de bienes',
+            data: sedesData,
+            backgroundColor: '#0d6efd'
+        }]
+    }
+});
+
+new Chart(document.getElementById('graficoMarcas'), {
+    type: 'doughnut',
+    data: {
+        labels: marcasLabels,
+        datasets: [{
+            label: 'Cantidad de bienes',
+            data: marcasData,
+            backgroundColor: [
+                '#0d6efd',
+                '#198754',
+                '#ffc107',
+                '#dc3545',
+                '#6f42c1'
+            ]
+        }]
+    }
+});
+</script>
+{% endblock %}
+

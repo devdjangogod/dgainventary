@@ -3,10 +3,53 @@ from django.db.models import Q
 from .models import BienInventario
 from .forms import BienInventarioForm
 
+from django.shortcuts import render
+from .models import BienInventario
+
+from django.db.models import Count
+from .models import BienInventario
+
+import json
+from django.db.models import Count
+from .models import BienInventario
 
 def dashboard(request):
-    return render(request, "inventario_patrimonial/dashboard.html")
+    total_bienes = BienInventario.objects.count()
+    total_usuarios = BienInventario.objects.values('usuario_responsable').distinct().count()
+    total_ambientes = BienInventario.objects.values('nombre_ambiente').distinct().count()
+    total_sedes = BienInventario.objects.values('sede_filial').distinct().count()
 
+    bienes_por_sede = BienInventario.objects.values('sede_filial').annotate(
+        total=Count('id')
+    ).order_by('-total')[:5]
+
+    bienes_por_dependencia = BienInventario.objects.values('dependencia').annotate(
+        total=Count('id')
+    ).order_by('-total')[:5]
+
+    bienes_por_marca = BienInventario.objects.values('marca').annotate(
+        total=Count('id')
+    ).order_by('-total')[:5]
+
+    ultimos_bienes = BienInventario.objects.all().order_by('-id')[:8]
+
+    return render(request, 'inventario_patrimonial/dashboard.html', {
+        'total_bienes': total_bienes,
+        'total_usuarios': total_usuarios,
+        'total_ambientes': total_ambientes,
+        'total_sedes': total_sedes,
+
+        'bienes_por_sede': bienes_por_sede,
+        'bienes_por_dependencia': bienes_por_dependencia,
+        'bienes_por_marca': bienes_por_marca,
+        'ultimos_bienes': ultimos_bienes,
+
+        'sedes_labels': json.dumps([x['sede_filial'] or 'Sin sede' for x in bienes_por_sede]),
+        'sedes_data': json.dumps([x['total'] for x in bienes_por_sede]),
+
+        'marcas_labels': json.dumps([x['marca'] or 'Sin marca' for x in bienes_por_marca]),
+        'marcas_data': json.dumps([x['total'] for x in bienes_por_marca]),
+    })
 
 def registros_inventario(request):
     bienes = BienInventario.objects.all().order_by("-creado")
@@ -35,11 +78,6 @@ def crear_bien(request):
     else:
         form = BienInventarioForm()
 
-    # return render(request, "inventario_patrimonial/formulario.html", {
-    #     "form": form,
-    #     "titulo": "Nuevo registro de inventario"
-    # })
-
     return render(request, 'inventario_patrimonial/formulario.html', {
         'form': form,
         'titulo': 'Nuevo Registro',
@@ -59,11 +97,6 @@ def editar_bien(request, pk):
             return redirect("registros_inventario")
     else:
         form = BienInventarioForm(instance=bien)
-
-    # return render(request, "inventario_patrimonial/formulario.html", {
-    #     "form": form,
-    #     "titulo": "Editar registro de inventario"
-    # })
 
     return render(request, 'inventario_patrimonial/formulario.html', {
         'form': form,
