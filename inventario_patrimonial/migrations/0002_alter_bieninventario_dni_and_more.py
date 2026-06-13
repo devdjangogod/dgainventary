@@ -1,4 +1,3 @@
-
 from django.db import migrations, models
 
 
@@ -12,7 +11,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='bieninventario',
             name='dni',
-        field=models.CharField(default='00000000', max_length=20),
+            field=models.CharField(default='00000000', max_length=20),
             preserve_default=False,
         ),
         migrations.AlterField(
@@ -20,13 +19,11 @@ class Migration(migrations.Migration):
             name='sede_filial',
             field=models.CharField(default='SIN SEDE', max_length=100),
             preserve_default=False,
-            field=models.CharField(max_length=100),
         ),
         migrations.AlterField(
             model_name='bieninventario',
             name='usuario_responsable',
             field=models.CharField(default='PRINCIPAL', max_length=150),
             preserve_default=False,
-            field=models.CharField(max_length=150),
         ),
     ]
