@@ -72,14 +72,13 @@
 
                         {% for field in form %}
                             {% if field.name == 'usuario_responsable' or field.name == 'dni' or field.name == 'sede_filial' or field.name == 'local' or field.name == 'dependencia' or field.name == 'unidad_nivel_1' or field.name == 'area_nivel_2' or field.name == 'sub_area_nivel_3' or field.name == 'nombre_ambiente' or field.name == 'piso_nivel' or field.name == 'referencia_ubicacion' %}
-
                             <div class="col-md-4 mb-3">
                                 <label class="form-label fw-semibold">
                                     {{ field.label }}
                                 </label>
 
                                 {{ field }}
-
+                                
                                 {% if field.errors %}
                                 <div class="text-danger small mt-1">
                                     {{ field.errors }}
@@ -211,7 +210,7 @@
 
                                 {% if field.errors %}
                                 <div class="text-danger small mt-1">
-                                    {{ field.errors }}
+                                    {{ field.errors }}  
                                 </div>
                                 {% endif %}
                             </div>
@@ -266,4 +265,35 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 </script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const trabajador = document.getElementById('id_usuario_responsable');
+
+    if (trabajador) {
+        trabajador.addEventListener('change', function () {
+            if (!this.value) return;
+
+            fetch(`/trabajadores/json/${this.value}/`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('id_usuario_responsable').dataset.nombre = data.usuario;
+
+                    document.getElementById('id_dni').value = data.dni;
+                    document.getElementById('id_sede_filial').value = data.sede;
+                    document.getElementById('id_local').value = data.local;
+                    document.getElementById('id_dependencia').value = data.dependencia;
+                    document.getElementById('id_unidad_nivel_1').value = data.unidad;
+                    document.getElementById('id_area_nivel_2').value = data.area;
+                    document.getElementById('id_sub_area_nivel_3').value = data.sub_area;
+                    document.getElementById('id_nombre_ambiente').value = data.ambiente;
+                    document.getElementById('id_piso_nivel').value = data.piso;
+                    document.getElementById('id_referencia_ubicacion').value = data.referencia;
+                });
+        });
+    }
+});
+</script>
+
 {% endblock %}

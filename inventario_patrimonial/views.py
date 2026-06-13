@@ -13,6 +13,14 @@ import json
 from django.db.models import Count
 from .models import BienInventario
 
+from django.contrib.auth.decorators import login_required
+from usuarios.decorators import roles_permitidos
+
+
+
+
+@login_required
+@roles_permitidos('Administrador', 'Registrador')
 def dashboard(request):
     total_bienes = BienInventario.objects.count()
     total_usuarios = BienInventario.objects.values('usuario_responsable').distinct().count()
@@ -51,6 +59,10 @@ def dashboard(request):
         'marcas_data': json.dumps([x['total'] for x in bienes_por_marca]),
     })
 
+
+
+@login_required
+@roles_permitidos('Administrador', 'Registrador')
 def registros_inventario(request):
     bienes = BienInventario.objects.all().order_by("-creado")
 
@@ -69,6 +81,8 @@ def registros_inventario(request):
     })
 
 
+@login_required
+@roles_permitidos('Administrador', 'Registrador')
 def crear_bien(request):
     if request.method == "POST":
         form = BienInventarioForm(request.POST)
@@ -86,7 +100,8 @@ def crear_bien(request):
 
 
 
-
+@login_required
+@roles_permitidos('Administrador', 'Registrador')
 def editar_bien(request, pk):
     bien = get_object_or_404(BienInventario, pk=pk)
 
@@ -106,17 +121,22 @@ def editar_bien(request, pk):
 
 
 
-
+@login_required
+@roles_permitidos('Administrador', 'Registrador')
 def eliminar_bien(request, pk):
     bien = get_object_or_404(BienInventario, pk=pk)
     bien.delete()
     return redirect("registros_inventario")
 
 
+@login_required
+@roles_permitidos('Administrador', 'Registrador')
 def reportes(request):
     return render(request, "inventario_patrimonial/reportes.html")
 
 
+@login_required
+@roles_permitidos('Administrador')
 def configuracion(request):
     return render(request, "inventario_patrimonial/configuracion.html")
 
@@ -127,6 +147,8 @@ def configuracion(request):
 from django.shortcuts import render, get_object_or_404
 from .models import BienInventario
 
+@login_required
+@roles_permitidos('Administrador', 'Registrador')
 def ficha_inventario(request, pk):
     bien = get_object_or_404(BienInventario, pk=pk)
 
@@ -134,7 +156,7 @@ def ficha_inventario(request, pk):
         usuario_responsable=bien.usuario_responsable,
         dni=bien.dni,
         sede_filial=bien.sede_filial,
-        local=bien.local,
+        local=bien.local,   
         dependencia=bien.dependencia,
         unidad_nivel_1=bien.unidad_nivel_1,
         area_nivel_2=bien.area_nivel_2,
